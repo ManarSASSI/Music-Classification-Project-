@@ -8,6 +8,14 @@ pipeline {
                 git branch: 'master', url: 'https://github.com/ManarSASSI/Music-Classification-Project-.git'
             }
         }
+        stage('Build frontend') {
+            steps {
+                script {
+                    dir('frontend/music-classification-genre-')
+                        {bat 'docker build -t frontend .'}
+                }
+            }
+        }
 
         stage('Build svm') {
             steps {
@@ -17,10 +25,18 @@ pipeline {
                 }
             }
         }
+        stage('Build vgg') {
+            steps {
+                script {
+                    dir('vgg-service')
+                        {bat 'docker build -t vgg .'}
+                }
+            }
+        }
         stage('Build and Start Services with Docker Compose') {
             steps {
                 script {
-                        bat 'docker-compose build'
+                        bat 'docker-compose up'
                 }
             }
         }
@@ -42,9 +58,7 @@ pipeline {
             steps {
                 script {
                     
-                    
                         bat 'docker-compose push'
-                    
                 }
             }
         }
